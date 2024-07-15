@@ -1,22 +1,18 @@
-// Corrections and improvements to the Time class program
+// Write a program that has a class to represent time. The class should have constructors to initialize data members hour, minute, and second to 0 and to initialize them to values passed as arguments. The class should have a member function to add time objects and return the result as a time object. There should be functions to display time in 12-hour and 24-hour format./ Corrections and improvements to the Time class program
 
 #include <iostream>
-
 class Time
 {
     int hour, minute, second;
 
 public:
-    // Default constructor
     Time() : hour(0), minute(0), second(0) {}
 
-    // Parameterized constructor
-    Time(int h, int m, int s) : hour(h), minute(m), second(s)
+    Time(int hr, int min, int sec) : hour(hr), minute(min), second(sec)
     {
         normalize();
     }
 
-    // Normalize time
     void normalize()
     {
         minute += second / 60;
@@ -25,48 +21,51 @@ public:
         minute %= 60;
     }
 
-    // Add two Time objects
     Time add(const Time &t) const
     {
-        int newSecond = second + t.second;
-        int overflowMinutes = newSecond / 60;
-        newSecond %= 60; // Adjust seconds if greater than 60
 
-        int newMinute = minute + t.minute + overflowMinutes;
-        int overflowHours = newMinute / 60;
-        newMinute %= 60; // Adjust minutes if greater than 60
-
-        int newHour = (hour + t.hour + overflowHours) % 24;
-
-        return Time(newHour, newMinute, newSecond);
+        int newSec = this->second + t.second;
+        int overFlowMin = newSec / 60;
+        newSec %= 60;
+        int newMin = this->minute + t.minute + overFlowMin;
+        newMin %= 60;
+        int overFlowHr = newMin / 60;
+        int newHr = (this->hour + t.hour + overFlowHr) % 24;
+        return Time(newHr, newMin, newSec);
     }
 
-    // Display time in 12-hour format
-    void display12() const
+    void display12()
     {
         int displayHour = hour % 12;
         if (displayHour == 0)
+        {
             displayHour = 12;
+        }
         std::cout << displayHour << ":" << minute << ":" << second << (hour >= 12 ? " PM" : " AM") << std::endl;
     }
 
-    // Display time in 24-hour format
-    void display24() const
+    void display24()
     {
-        std::cout << hour << ":" << minute << ":" << second << std::endl;
-    }
+        int displayHour = hour % 24;
+        if (displayHour == 0)
+        {
+            displayHour = 24;
+        }
+        std::cout << displayHour << ":" << minute << ':' << second << std::endl;
+    };
 };
 
 int main()
 {
-    Time defaultTime;      // Fixed: Removed parentheses to avoid function declaration
-    Time temp(12, 75, 75); // This will be normalized to 13:16:15;
-    Time specificTime(14, 15, 0);
-    specificTime.display12();
-    specificTime.display24();
+    Time defaultTime;
+    Time setTime(10, 20, 30);
+    setTime.display12();
+    setTime.display24();
+    Time test(23, 78, 29);
+    Time addTime = setTime.add(test);
+    addTime.display12();
+    addTime.display24();
 
-    // Correctly use the add function and display the result
-    Time addedTime = specificTime.add(temp);
-    addedTime.display12();
-    addedTime.display24();
+    return 0;
 }
+
